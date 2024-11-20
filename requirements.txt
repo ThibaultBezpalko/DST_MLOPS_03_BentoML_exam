@@ -12,3 +12,10 @@ pathlib
 scikit-learn
 # imbalanced-learn
 joblib
+bentoml
+PyJWT
+pydantic
+starlette
+datetime 
+pyOpenSSL
+secrets

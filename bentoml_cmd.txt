@@ -1,0 +1,20 @@
+############################
+Commands to run
+############################
+
+# Environment
+
+
+# Set the cloud context for BentoML running
+bentoml cloud login \
+    --api-token 'cssqjapke70agdh85oig' \
+    --endpoint 'https://thibaultbezpalko.cloud.bentoml.com'
+
+export BENTO_CLOUD_API_KEY=cssqjapke70agdh85oig
+export BENTO_CLOUD_API_ENDPOINT=https://thibaultbezpalko.cloud.bentoml.com
+
+# Load a saved model
+bentoml models pull admission_rf:latest
+
+# in a first terminal, start the API
+bentoml serve service:rf_service --reload
