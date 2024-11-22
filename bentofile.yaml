@@ -1,0 +1,31 @@
+service: "src.api.service:rf_service"
+
+labels:
+  owner: "Thibault BEZPALKO"
+  project: "Admissions Prediction"
+  name: admissions_prediction
+  version: 1.0.0
+
+description: "Predict the chance of admission of a student in a university"
+
+include:
+  - src/
+  - data/
+
+python:
+    packages:
+      - numpy
+      - pandas
+      - scikit-learn
+      - bentoml
+      - pydantic
+      - requests
+      - pyjwt
+      - click
+      - logging
+      - pathlib 
+      - joblib
+      - starlette
+      - datetime 
+      - pyOpenSSL
+      - secrets

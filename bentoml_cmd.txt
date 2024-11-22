@@ -14,7 +14,22 @@ export BENTO_CLOUD_API_KEY=cssqjapke70agdh85oig
 export BENTO_CLOUD_API_ENDPOINT=https://thibaultbezpalko.cloud.bentoml.com
 
 # Load a saved model
-bentoml models pull admission_rf:latest
+bentoml models pull admissions_rf:latest
 
 # in a first terminal, start the API
 bentoml serve service:rf_service --reload
+
+# Bento building:
+    > create a bentofile.yaml at the root of the project
+    > bento building cmd:
+        bentoml build
+    > check bento creation:
+        bentoml list
+
+# Bento containerization:
+    > check Docker is installed: 
+        docker --version
+    > containerization cmd:
+        bentoml containerize rf_service:latest
+    > If needed, cleaning docker cache:
+        docker system prune -a
