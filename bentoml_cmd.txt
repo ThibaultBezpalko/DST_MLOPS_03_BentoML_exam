@@ -2,8 +2,17 @@
 Commands to run
 ############################
 
-# Environment
+# Environment (from the project foldeer root)
+> create a virtual env:
 
+> activate virtual env:
+    source bentoml_exam/bin/activate
+> install requirements:
+    python3 -m pip install -r requirements.txt
+
+# Get the data (from the project foldeer root):
+python3 src/data/import_raw_data.py 
+python3 src/data/make_dataset.py (input data: ./data/raw/admissions.csv ; output : ./data/processed)
 
 # Set the cloud context for BentoML running
 bentoml cloud login \
@@ -13,23 +22,51 @@ bentoml cloud login \
 export BENTO_CLOUD_API_KEY=cssqjapke70agdh85oig
 export BENTO_CLOUD_API_ENDPOINT=https://thibaultbezpalko.cloud.bentoml.com
 
-# Load a saved model
-bentoml models pull admissions_rf:latest
+# Build a bento model:
+    python3 src/model/train_model.py 
 
-# in a first terminal, start the API
-bentoml serve service:rf_service --reload
+# Load a saved bento model
+    bentoml models pull admissions:latest
+
+# API test
+> in a first terminal, from src/api/, start the API:
+    bentoml serve service:rf_service --reload
+> in a second terminal, from root project, start a test script:
+    python3 src/api/test.py
+
 
 # Bento building:
-    > create a bentofile.yaml at the root of the project
-    > bento building cmd:
-        bentoml build
-    > check bento creation:
-        bentoml list
+> create a bentofile.yaml at the root of the project
+> bento building cmd:
+    bentoml build
+> check bento creation:
+    bentoml list
 
 # Bento containerization:
-    > check Docker is installed: 
-        docker --version
-    > containerization cmd:
-        bentoml containerize rf_service:latest
-    > If needed, cleaning docker cache:
-        docker system prune -a
+> check Docker is installed: 
+    docker --version
+> containerization cmd:
+    bentoml containerize admissions_service:latest
+> in case of error related to cargo:
+    > copy the Dockerfile in the folder bentoml/bentos/<service name>/<tag du bento>/env/docker
+    > paste it in a folder of your project (example: <project folder>/src/docker/)
+    > replace the initial cmd "mv $HOME/.cargo/bin/uv /usr/local/bin/" by the cmd "mv /root/.local/bin/uv /usr/local/bin/"
+      OR find a way to make uv lib installed in the folder .cargo/bin and not the .local/bin
+    > add the 2 following lines in the bentofile.yaml of the project:
+        docker:
+            dockerfile_template: <path to the new Dockerfile>
+    > delete the current failed bento
+    > rebuild a bento
+        bentoml build 
+    > containerize the new bento 
+        bentoml containerize admissions_service:latest
+
+# Test the docker image:
+> in a first terminal, start the bento container:
+    docker run -p 3000:3000 rf_clf_service:TAG_DE_VOTRE_BENTO
+> in a second terminal, from root project, start a test script:
+    python3 src/api/test.py
+
+
+> If needed, cleaning docker cache:
+    docker system prune -a

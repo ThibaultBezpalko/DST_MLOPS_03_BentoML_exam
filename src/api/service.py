@@ -21,7 +21,7 @@ USERS = {
 
 class JWTAuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
-        if request.url.path == "/v1/models/rf_regressor/predict":
+        if request.url.path == "/v1/models/admissions/predict":
             token = request.headers.get("Authorization")
             if not token:
                 return JSONResponse(status_code=401, content={"detail": "Missing authentication token"})
@@ -51,16 +51,16 @@ class InputModel(BaseModel):
     research: int
 
 # Get the model from the Model Store
-admissions_rf_runner = bentoml.sklearn.get("admissions_rf:latest").to_runner()
+admissions_runner = bentoml.sklearn.get("admissions:latest").to_runner()
 
 # Create a service API
-rf_service = bentoml.Service("rf_service", runners=[admissions_rf_runner])
+admissions_service = bentoml.Service("admissions_service", runners=[admissions_runner])
 
 # Add the JWTAuthMiddleware to the service
-rf_service.add_asgi_middleware(JWTAuthMiddleware)
+admissions_service.add_asgi_middleware(JWTAuthMiddleware)
 
 # Create an API endpoint for the service
-@rf_service.api(input=JSON(), output=JSON())
+@admissions_service.api(input=JSON(), output=JSON())
 def login(credentials: dict) -> dict:
     username = credentials.get("username")
     password = credentials.get("password")
@@ -72,10 +72,10 @@ def login(credentials: dict) -> dict:
         return JSONResponse(status_code=401, content={"detail": "Invalid credentials"})
 
 # Create an API endpoint for the service
-@rf_service.api(
+@admissions_service.api(
     input=JSON(pydantic_model=InputModel),
     output=JSON(),
-    route='v1/models/rf_regressor/predict'
+    route='v1/models/admissions/predict'
 )
 async def classify(input_data: InputModel, ctx: bentoml.Context) -> dict:
     request = ctx.request
@@ -87,7 +87,7 @@ async def classify(input_data: InputModel, ctx: bentoml.Context) -> dict:
         input_data.sop, input_data.lor, input_data.cgpa, input_data.research
     ])
 
-    result = await admissions_rf_runner.predict.async_run(input_series.reshape(1, -1))
+    result = await admissions_runner.predict.async_run(input_series.reshape(1, -1))
 
     return {
         "prediction": result.tolist(),

@@ -2,7 +2,7 @@ import requests
 
 # The URL of the login and prediction endpoints
 login_url = "http://127.0.0.1:3000/login"
-predict_url = "http://127.0.0.1:3000/v1/models/rf_regressor/predict"
+predict_url = "http://127.0.0.1:3000/v1/models/admissions/predict"
 
 # Données de connexion
 credentials = {

@@ -60,7 +60,7 @@ print(f"Actual label: {y_test[0]}")
 print(f"Predicted label: {rf_regressor.predict(test_data)[0]}")
 
 # Enregistrer le modèle dans le Model Store de BentoML
-model_ref = bentoml.sklearn.save_model("admissions_rf", rf_regressor)
+model_ref = bentoml.sklearn.save_model("admissions", rf_regressor)
 
 print(f"Modèle enregistré sous : {model_ref}")
 

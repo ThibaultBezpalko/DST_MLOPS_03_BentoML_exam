@@ -1,4 +1,4 @@
-service: "src.api.service:rf_service"
+service: "src.api.service:admissions_service"
 
 labels:
   owner: "Thibault BEZPALKO"
@@ -11,6 +11,9 @@ description: "Predict the chance of admission of a student in a university"
 include:
   - src/
   - data/
+
+docker:
+  dockerfile_template: /home/ubuntu/DST_MLOPS_03_BentoML_exam/src/docker/Dockerfile
 
 python:
     packages:
@@ -26,6 +29,4 @@ python:
       - pathlib 
       - joblib
       - starlette
-      - datetime 
-      - pyOpenSSL
-      - secrets
+      - datetime
