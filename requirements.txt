@@ -5,12 +5,13 @@ pandas
 logging
 numpy 
 pathlib 
-scikit-learn
+scikit-learn[metrics,model_selection,svm,ensemble,preprocessing]
 joblib
 bentoml
 pyjwt
 pydantic
-starlette
+starlette[responses,middleware]
 datetime 
-pyOpenSSL
-secrets
+#pyOpenSSL
+#secrets
+xgboost

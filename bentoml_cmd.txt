@@ -10,7 +10,7 @@ Commands to run
 > install requirements:
     python3 -m pip install -r requirements.txt
 
-# Get the data (from the project foldeer root):
+# Get the data (from the project folder root):
 python3 src/data/import_raw_data.py 
 python3 src/data/make_dataset.py (input data: ./data/raw/admissions.csv ; output : ./data/processed)
 
@@ -29,11 +29,10 @@ export BENTO_CLOUD_API_ENDPOINT=https://thibaultbezpalko.cloud.bentoml.com
     bentoml models pull admissions:latest
 
 # API test
-> in a first terminal, from src/api/, start the API:
-    bentoml serve service:rf_service --reload
+> in a first terminal, from the project folder root, start the API:
+    bentoml serve src.api.service:admissions_service --reload
 > in a second terminal, from root project, start a test script:
     python3 src/api/test.py
-
 
 # Bento building:
 > create a bentofile.yaml at the root of the project
@@ -63,10 +62,12 @@ export BENTO_CLOUD_API_ENDPOINT=https://thibaultbezpalko.cloud.bentoml.com
 
 # Test the docker image:
 > in a first terminal, start the bento container:
-    docker run -p 3000:3000 rf_clf_service:TAG_DE_VOTRE_BENTO
+    docker run -p 3000:3000 admissions_service:TAG_DE_VOTRE_BENTO
 > in a second terminal, from root project, start a test script:
     python3 src/api/test.py
 
+# Save the docker image:
+> docker save -o bento_image.tar <nom_de_votre_image>
 
 > If needed, cleaning docker cache:
     docker system prune -a

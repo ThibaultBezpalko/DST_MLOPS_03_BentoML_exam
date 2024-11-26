@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import bentoml
 from bentoml.io import NumpyNdarray, JSON
 from pydantic import BaseModel, Field
@@ -7,10 +8,15 @@ from starlette.middleware.base import BaseHTTPMiddleware
 import jwt
 from datetime import datetime, timedelta
 import os
+from joblib import load
+from pathlib import Path
+
+# print("Current working directory:", os.getcwd())
+# print(f"Current file: {str(Path(__file__))}")
 
 
 # Secret key and algorithm for JWT authentication
-JWT_SECRET_KEY = "This_is_not_a_secret_key"
+JWT_SECRET_KEY = "D4t4scientest_MLOPS_2024"
 JWT_ALGORITHM = "HS256"
 
 # User credentials for authentication
@@ -41,7 +47,6 @@ class JWTAuthMiddleware(BaseHTTPMiddleware):
 
 # Pydantic model to validate input data
 class InputModel(BaseModel):
-    serial_nb: int
     gre: int
     toefl: int
     university_rating: int
@@ -83,11 +88,16 @@ async def classify(input_data: InputModel, ctx: bentoml.Context) -> dict:
 
     # Convert the input data to a numpy array
     input_series = np.array([
-        input_data.serial_nb, input_data.gre, input_data.toefl, input_data.university_rating,
+        input_data.gre, input_data.toefl, input_data.university_rating,
         input_data.sop, input_data.lor, input_data.cgpa, input_data.research
     ])
 
-    result = await admissions_runner.predict.async_run(input_series.reshape(1, -1))
+    # Scale the input data
+    scaler = load('./src/data/scaler.joblib')
+    input_series_df = pd.DataFrame(input_series.reshape(1, -1), columns=['GRE Score','TOEFL Score','University Rating','SOP','LOR ','CGPA','Research'])
+    X_input = scaler.transform(input_series_df)
+
+    result = await admissions_runner.predict.async_run(X_input)
 
     return {
         "prediction": result.tolist(),

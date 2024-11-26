@@ -13,13 +13,14 @@ include:
   - data/
 
 docker:
+  base_image: "python:3.9-slim"
   dockerfile_template: /home/ubuntu/DST_MLOPS_03_BentoML_exam/src/docker/Dockerfile
 
 python:
     packages:
       - numpy
       - pandas
-      - scikit-learn
+      - scikit-learn[metrics,model_selection,svm,ensemble,preprocessing]
       - bentoml
       - pydantic
       - requests
@@ -28,5 +29,6 @@ python:
       - logging
       - pathlib 
       - joblib
-      - starlette
+      - starlette[responses,middleware]
       - datetime
+      - xgboost
